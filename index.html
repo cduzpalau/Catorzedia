@@ -6,7 +6,7 @@
     <title>A Message for You</title>
     <style>
         /* --- CSS STYLES --- */
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Shadows+Into+Light&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Shadows+Into+Light&family=Lato:wght@300;400&display=swap');
 
         :root {
             --bg-color: #121212;
@@ -23,12 +23,23 @@
             color: var(--text-main);
             font-family: 'Cinzel', serif;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            text-align: center;
             flex-direction: column;
+            align-items: center;
+            min-height: 100vh; /* Allow growing */
+            text-align: center;
+        }
+
+        /* Container ensures content is centered but scrollable */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Centered vertically if content is short */
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         h1, h2, p {
@@ -41,13 +52,8 @@
 
         /* --- PHASE 1: INTRO --- */
         #intro-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             cursor: pointer;
-            width: 100%;
-            height: 100%;
+            padding: 40px 0;
         }
 
         .cryptic-text {
@@ -56,14 +62,15 @@
             text-shadow: 0 0 10px var(--accent-cyan);
             margin-bottom: 2rem;
             font-family: 'Shadows Into Light', cursive;
-            padding: 0 20px;
         }
 
         .emoji-container {
             font-size: 3rem;
             display: flex;
             gap: 20px;
+            justify-content: center;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         .running {
@@ -75,10 +82,10 @@
         }
 
         @keyframes runAcross {
-            0% { transform: translateX(-100px); opacity: 0; }
+            0% { transform: translateX(-50px); opacity: 0; }
             20% { opacity: 1; }
             80% { opacity: 1; }
-            100% { transform: translateX(100px); opacity: 0; }
+            100% { transform: translateX(50px); opacity: 0; }
         }
 
         @keyframes bounce {
@@ -100,17 +107,17 @@
 
         /* --- PHASE 2: PUZZLE --- */
         #puzzle-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            width: 100%;
         }
 
         .puzzle-instructions {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             color: var(--accent-pink);
             font-family: 'Shadows Into Light', cursive;
+            font-size: 1.2rem;
         }
 
+        /* Grid layout for puzzle */
         #puzzle-container {
             display: grid;
             grid-template-columns: repeat(3, 100px);
@@ -118,6 +125,11 @@
             gap: 2px;
             border: 2px solid var(--accent-cyan);
             background-color: #222;
+            width: 306px; /* 3*100 + 2*gap + border correction */
+            height: 306px;
+            margin: 0 auto;
+            position: relative;
+            touch-action: none; /* Prevents scrolling while dragging on puzzle */
         }
 
         .puzzle-piece {
@@ -125,88 +137,105 @@
             height: 100px;
             background-size: 300px 300px; /* 3 cols * 100px */
             cursor: grab;
-            transition: transform 0.2s;
-        }
-
-        .puzzle-piece:active {
-            cursor: grabbing;
-            transform: scale(0.95);
-            z-index: 10;
+            position: relative;
+            box-sizing: border-box;
+            border: 1px solid #333;
         }
 
         .puzzle-piece.dragging {
-            opacity: 0.5;
+            z-index: 100;
+            opacity: 0.8;
+            box-shadow: 0 0 15px var(--accent-cyan);
+            border: 2px solid var(--accent-cyan);
         }
 
         /* --- PHASE 3: REVEAL --- */
         #reveal-screen {
-            position: relative;
-            width: 90%;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            width: 100%;
+            animation: fadeIn 1s ease-in;
+            padding-bottom: 50px; /* Extra space at bottom for scrolling */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .card-display {
             width: 100%;
-            max-width: 300px;
+            max-width: 350px;
             border: 3px solid var(--accent-yellow);
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(255, 235, 59, 0.3);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .card-meaning {
-            font-size: 1.1rem;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
             color: #fff;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             border-left: 4px solid var(--accent-pink);
+            text-align: justify;
+        }
+
+        .card-meaning strong {
+            color: var(--accent-yellow);
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            font-family: 'Cinzel', serif;
         }
 
         .question {
             font-size: 1.8rem;
-            margin-bottom: 20px;
+            margin: 30px 0;
             color: var(--accent-pink);
             font-weight: bold;
         }
 
         .buttons {
             display: flex;
+            flex-wrap: wrap;
             gap: 20px;
             align-items: center;
             justify-content: center;
-            height: 80px; /* Reserve space for growing button */
+            min-height: 80px;
         }
 
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-family: 'Cinzel', serif;
-            font-size: 1rem;
+            font-size: 1.1rem;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
         #yes-btn {
             background-color: var(--accent-cyan);
             color: #000;
             font-weight: bold;
+            box-shadow: 0 0 10px var(--accent-cyan);
         }
 
         #no-btn {
             background-color: transparent;
-            border: 1px solid var(--accent-pink);
+            border: 2px solid var(--accent-pink);
             color: var(--accent-pink);
         }
 
-        #no-btn:hover {
-            background-color: rgba(255, 0, 127, 0.1);
+        #no-btn:active {
+            transform: scale(0.95);
         }
 
         /* --- PHASE 4: FINAL --- */
@@ -229,11 +258,14 @@
         .final-msg {
             color: var(--accent-yellow);
             text-shadow: 0 0 10px var(--accent-yellow);
+            padding: 0 20px;
         }
 
     </style>
 </head>
 <body>
+
+<div class="container">
 
     <div id="intro-screen" onclick="startPuzzle()">
         <div class="cryptic-text">
@@ -248,17 +280,21 @@
     </div>
 
     <div id="puzzle-screen" class="hidden">
-        <div class="puzzle-instructions">Restore the vision... (Drag and drop tiles)</div>
+        <div class="puzzle-instructions">Restore the vision... (Drag pieces to swap)</div>
         <div id="puzzle-container"></div>
     </div>
 
     <div id="reveal-screen" class="hidden">
         <img id="final-card-image" class="card-display" src="" alt="Oonagh's Card">
+        
         <div class="card-meaning">
-            <strong>Oonagh (Queen of Wands):</strong> <br>
-            <span id="meaning-text">She represents creativity, passion, and determination. A bond that defies simple definition, full of fire and independent spirit.</span>
+            <strong>Message from Oonagh:</strong>
+            “Nurturing a cause or a relationship is a long-term commitment, and one that can’t be rushed. This level of devotion comes from a place of deep loving and concern. I care what happens to my planet and to my loved ones so much that I am willing to stick with them through thick and thin. This is not always easy, but to me, it is the only way to ensure that matters are resolved and healed. <br><br>
+            I listen to the passionate stirrings of my heart. I reach out and take action to let my loved ones know that I deeply care about them. I take action to spur on my pet causes. Never mind what other people may think; you will benefit by carrying through with your priorities. You will feel so good about yourself if you make time for the relationships and projects that truly count in your heart. Do what is important to you, and do it with absolute devotion! But remember that there is no competition for your true life’s purpose, so there is no need to worry, hurry, or feel that you have to force things to happen.”
         </div>
+
         <div class="question">Will you be my Valentine?</div>
+        
         <div class="buttons">
             <button id="yes-btn" onclick="sayYes()">Yes</button>
             <button id="no-btn" onclick="makeExcuses()">No</button>
@@ -270,15 +306,12 @@
         <div class="final-msg">The best is yet to come.</div>
     </div>
 
+</div>
+
     <script>
         // --- CONFIGURATION ---
+        const tarotImageSrc = "https://archangeloracle.com/wp-content/uploads/2017/04/fullsizeoutput_7249.jpeg";
         
-        // 1. PLACEHOLDER IMAGE: Replace this URL with the actual link to your Tarot Card image.
-        // Note: The image should ideally be square or 3:4 ratio for the puzzle to look best.
-        // Using a generic tarot back placeholder for now.
-        const tarotImageSrc = "https://archangeloracle.com/wp-content/uploads/2017/04/fullsizeoutput_7249.jpeg"; 
-        
-        // 2. TEXT CONFIGURATION
         const excuses = [
             "Not yet",
             "I'm not ready",
@@ -311,22 +344,21 @@
                     piece.classList.add('puzzle-piece');
                     piece.style.backgroundImage = `url(${tarotImageSrc})`;
                     piece.style.backgroundPosition = `-${c * 100}px -${r * 100}px`;
-                    piece.draggable = true;
                     
                     // Store correct position
                     piece.dataset.correctR = r;
                     piece.dataset.correctC = c;
                     
-                    // Initial random position logic will handle actual placement
-                    piece.dataset.currentR = r;
-                    piece.dataset.currentC = c;
-
+                    // Desktop Drag Events
+                    piece.draggable = true;
                     piece.addEventListener('dragstart', dragStart);
                     piece.addEventListener('dragover', dragOver);
                     piece.addEventListener('drop', drop);
-                    
-                    // For touch devices (basic support)
-                    piece.addEventListener('click', touchSwap);
+
+                    // Mobile Touch Events (Custom Drag Logic)
+                    piece.addEventListener('touchstart', touchStart, {passive: false});
+                    piece.addEventListener('touchmove', touchMove, {passive: false});
+                    piece.addEventListener('touchend', touchEnd);
 
                     pieces.push(piece);
                 }
@@ -337,22 +369,23 @@
             pieces.forEach(p => puzzleContainer.appendChild(p));
         }
 
+        // --- MOUSE DRAG & DROP (Desktop) ---
         let draggedPiece = null;
-        let selectedPiece = null; // For touch click-to-swap
 
         function dragStart(e) {
             draggedPiece = this;
+            e.dataTransfer.effectAllowed = 'move';
             this.classList.add('dragging');
         }
 
         function dragOver(e) {
-            e.preventDefault(); // Necessary to allow dropping
+            e.preventDefault(); 
+            e.dataTransfer.dropEffect = 'move';
         }
 
         function drop(e) {
             e.preventDefault();
             const targetPiece = this;
-            
             if (draggedPiece && draggedPiece !== targetPiece) {
                 swapPieces(draggedPiece, targetPiece);
             }
@@ -361,28 +394,84 @@
             checkWin();
         }
 
-        // Simple click-to-swap for mobile usability
-        function touchSwap() {
-            if (!selectedPiece) {
-                selectedPiece = this;
-                this.style.opacity = '0.5';
-            } else {
-                swapPieces(selectedPiece, this);
-                selectedPiece.style.opacity = '1';
-                selectedPiece = null;
-                checkWin();
-            }
+        // --- TOUCH DRAG & DROP (Mobile) ---
+        // Variables to track touch movement
+        let touchStartElement = null;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchClone = null; // Visual representation of dragging
+
+        function touchStart(e) {
+            // Prevent default to stop scrolling while solving puzzle
+            if(e.cancelable) e.preventDefault();
+            
+            const touch = e.touches[0];
+            touchStartElement = this;
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            
+            // Create a clone to follow finger
+            touchClone = this.cloneNode(true);
+            touchClone.style.position = 'fixed';
+            touchClone.style.left = (touchStartX - 50) + 'px'; // Center on finger (roughly)
+            touchClone.style.top = (touchStartY - 50) + 'px';
+            touchClone.style.zIndex = '1000';
+            touchClone.style.opacity = '0.8';
+            touchClone.style.pointerEvents = 'none'; // Let clicks pass through to detect underlying element
+            touchClone.style.boxShadow = '0 0 15px #00e5ff';
+            document.body.appendChild(touchClone);
+            
+            this.style.opacity = '0.4'; // Dim original
         }
 
+        function touchMove(e) {
+            if(e.cancelable) e.preventDefault();
+            if (!touchClone) return;
+
+            const touch = e.touches[0];
+            touchClone.style.left = (touch.clientX - 50) + 'px';
+            touchClone.style.top = (touch.clientY - 50) + 'px';
+        }
+
+        function touchEnd(e) {
+            const touch = e.changedTouches[0];
+            
+            // Remove clone
+            if (touchClone) {
+                document.body.removeChild(touchClone);
+                touchClone = null;
+            }
+            
+            // Restore opacity
+            if (touchStartElement) {
+                touchStartElement.style.opacity = '1';
+            }
+
+            // Identify element dropped upon
+            // We temporarily hide the start element so we can find what's *underneath* it if we didn't move far
+            touchStartElement.style.display = 'none';
+            let targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+            touchStartElement.style.display = 'block';
+
+            // Check if valid drop target
+            if (targetElement && targetElement.classList.contains('puzzle-piece') && targetElement !== touchStartElement) {
+                swapPieces(touchStartElement, targetElement);
+                checkWin();
+            }
+
+            touchStartElement = null;
+        }
+
+        // --- SHARED UTILS ---
         function swapPieces(nodeA, nodeB) {
-            const parentA = nodeA.parentNode;
+            const parent = nodeA.parentNode;
             const siblingA = nodeA.nextSibling === nodeB ? nodeA : nodeA.nextSibling;
             
             // Move nodeA to nodeB's position
             nodeB.parentNode.insertBefore(nodeA, nodeB);
             
             // Move nodeB to nodeA's original position
-            parentA.insertBefore(nodeB, siblingA);
+            parent.insertBefore(nodeB, siblingA);
         }
 
         function shuffleArray(array) {
@@ -396,16 +485,11 @@
             const currentPieces = Array.from(puzzleContainer.children);
             let isCorrect = true;
             
-            // Calculate expected order
-            // The pieces were created in order (0,0), (0,1), (0,2), etc.
-            // We check if the piece at index i has correctR and correctC matching the grid index
-            
             for (let i = 0; i < currentPieces.length; i++) {
                 const piece = currentPieces[i];
                 const targetR = parseInt(piece.dataset.correctR);
                 const targetC = parseInt(piece.dataset.correctC);
                 
-                // Calculate actual row/col based on index i
                 const actualR = Math.floor(i / cols);
                 const actualC = i % cols;
                 
@@ -416,7 +500,7 @@
             }
 
             if (isCorrect) {
-                setTimeout(showReveal, 500);
+                setTimeout(showReveal, 300);
             }
         }
 
@@ -428,6 +512,9 @@
             
             // Set the full image
             document.getElementById('final-card-image').src = tarotImageSrc;
+            
+            // Auto scroll to make sure message is seen
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // --- INTERACTION LOGIC ---
@@ -445,8 +532,8 @@
             
             // Grow Yes button
             const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-            yesBtn.style.fontSize = (currentSize + 5) + 'px';
-            yesBtn.style.padding = (10 + noClickCount * 2) + 'px ' + (20 + noClickCount * 5) + 'px';
+            yesBtn.style.fontSize = (currentSize + 2) + 'px';
+            yesBtn.style.padding = (12 + noClickCount) + 'px ' + (24 + noClickCount * 2) + 'px';
         }
 
         function sayYes() {
